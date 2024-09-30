@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 const GetFetchTADataApi = async() => {
     try{
-        const response = await axios.get("http://localhost:5173/apiDemo/calendarfromtoenddate.json");
+        const response = await axios.get("/calendar-app/apiDemo/calendarfromtoenddate.json");
         return response;
     } catch (e) { toast.error('Error Fetching TAMeeting, Pls try again later!'); }
 }
