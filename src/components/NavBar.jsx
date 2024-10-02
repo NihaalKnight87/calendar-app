@@ -6,11 +6,11 @@ import IconLogoV from '../assets/icons/IconsLogo_v.png';
 function NavBar() {
   return (
     <nav>
-        <div className='navTopBar'>
+        <div className='navTopBar dropAnim_Nav'>
             <img src={CompanyLogo} alt="Company Logo" />
             <img src={IconLogoH} alt="Icon Logo H" />
         </div>
-            <div className='navLeftSideBar'>
+        <div className='navLeftSideBar dropAnim_NavSide'>
             <img src={IconLogoV} alt="Icon Logo V" />
         </div>
     </nav>

@@ -1,14 +1,14 @@
 /* I didnt commented here becuase this is not a realtime project its just a task. Keep in mind that i do comment every script which i write make it easer for other deverloper to read */
 import '../../custom-css/Calandar.css';
 import { GetFetchTADataApi } from '../../api/UserApi.jsx';
+import { HeaderTemplate, ContentTemplate } from './calendarTemplets/CalQuickInfoTemplate.jsx';
 import CalDateHeaderTemplate from './calendarTemplets/CalDateHeaderTemplate.jsx';
 import CalEventTemplate from './calendarTemplets/CalEventTemplate.jsx';
-
-import { ScheduleComponent, Day, Week, Month, Inject, ViewsDirective, ViewDirective, HeaderRowsDirective, HeaderRowDirective, Year as YearView, Year } from '@syncfusion/ej2-react-schedule';
-import { useEffect, useRef, useState } from "react";
+import { ScheduleComponent, Day, Week, Month, Inject, ViewsDirective, ViewDirective, Year as YearView } from '@syncfusion/ej2-react-schedule';
 import { toast } from 'react-toastify';
+import { useEffect, useRef, useState } from "react";
 
-function Calendar(){
+function Calendar({ sendDataToCalSection }){
     const scheduleRef = useRef(null);
     const [view, setView] = useState('Week');
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -19,7 +19,6 @@ function Calendar(){
         (async () => {
             try {
                 const response = await GetFetchTADataApi();
-                const dataRaw = response.status === 200 ? (() =>  response)() : (() =>  response)();
                 if(response.status === 200) {
                     const dataRAW = response.data;
 
@@ -29,46 +28,82 @@ function Calendar(){
                         return [ 
                             ...prevSetEvents, 
                             ...dataRAW.map(data => ({
-                                Id: data.id,
-                                Subject: data.summary,
+                                Id: crypto.randomUUID(),
                                 Description: data.desc,
                                 StartTime: new Date(data.start),
                                 EndTime: new Date(data.end),
                                 Location: data.link,
-                                InterviewerName: `${data.user_det.handled_by.firstName} ${data.user_det.handled_by.lastName}`,
+                                InterviewerName: `${data.user_det.handled_by.firstName}`,
                                 CandidateName: `${data.user_det.candidate.candidate_firstName} ${data.user_det.candidate.candidate_lastName}`,
-                                CandidateEmail: data.user_det.candidate.candidate_email,
                                 JobTitle: data.job_id.jobRequest_Title,
                                 JobRole: data.job_id.jobRequest_Role,
-                                JobKeySkills: data.job_id.jobRequest_KeySkills,
-                            })
-                        )];
+                            }))
+                        ];
                     });
                 } else { toast.error('Error Fetching TAMeeting, Pls try again later!'); return; }
             } catch (error) { toast.error('Error Fetching TAMeeting, Pls try again later!'); }
         })();
     }, []);
-    
-    const onEventRendered = () => {
-        // const appointments = document.querySelectorAll(
-        // `.e-appointment[data-id^="Appointment_"]`
-        // );
 
-        // const topPositions = new Map();
-        // appointments.forEach((appointment) => {
-        // const top = appointment.style.top;
-
-        // if (topPositions.has(top)) {
-        //     appointment.style.display = "none";
-        // } else {
-        //     topPositions.set(top, true);
-        // }
-
-        // appointment.style.width = "95.9%";
-        // });
+    const customTimeSlot = (slotData) => {
+        const date = new Date(slotData.date);
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const period = hours >= 12 ? 'P.M' : 'A.M';
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes === 0 ? '' : `:${minutes.toString().padStart(2, '0')}`;
+        
+        return (
+            <div className='e-time-slots'>
+            <span>{formattedHours}{formattedMinutes} {period}</span>
+            </div>
+        );
     };
 
-    const calOnActionComplete = () => {
+    const quickInfoTemplate = {
+        header: (props) => HeaderTemplate(props, scheduleRef),
+        content: (props) => ContentTemplate(props, events, scheduleRef, sendDataToCalSection)
+    };
+
+    const onEventRendered = () => {
+        const observer = new MutationObserver(() => {
+            const appointments = document.querySelectorAll(
+                `.e-appointment[data-id^="Appointment_"]`
+            );
+    
+            const topPositions = new Map();
+            appointments.forEach((appointment) => {
+                const top = appointment.style.top;
+                if (topPositions.has(top)) appointment.style.display = "none";
+                else topPositions.set(top, true);
+                appointment.style.width = "95.9%";
+            });
+        });
+    
+        const container = document.querySelector(".e-content-wrap");
+        container && observer.observe(container, { childList: true, subtree: true, });
+    };
+
+    const calOnActionComplete = (e) => {
+        if(e.addedRecords && e.addedRecords.length > 0){
+            const data = e.addedRecords[0];
+            setEvents(prevSetEvents => {
+                return [ 
+                    ...prevSetEvents, ({
+                        Id: crypto.randomUUID(),
+                        Description: data.Description || 'NA',
+                        StartTime: new Date(data.StartTime),
+                        EndTime: new Date(data.EndTime),
+                        Location: 'NA',
+                        InterviewerName: `NA`,
+                        CandidateName: 'NA',
+                        JobTitle: 'NA',
+                        JobRole: 'NA',
+                    })
+                ];
+            });
+        }
+
         const currentView = scheduleRef.current ? scheduleRef.current.currentView : '';
         const selectedDates = scheduleRef.current ? scheduleRef.current.getCurrentViewDates() : '';
         const startDate = selectedDates[0];
@@ -92,11 +127,14 @@ function Calendar(){
             ref={scheduleRef}
             width="auto"
             height="auto"
+            startHour="9:00"
             firstDayOfWeek={1}
             currentView={view}
             selectedDate={currentDate}
+            timeScale={{ enable: true, interval: 60, slotCount: 1, majorSlotTemplate: customTimeSlot }}
             dateHeaderTemplate={CalDateHeaderTemplate}
-            eventSettings={{ dataSource: events, template: (props) => CalEventTemplate(props, events) }}
+            eventSettings={{ dataSource: [...events], template: (props) => CalEventTemplate(props, events) }}
+            quickInfoTemplates={quickInfoTemplate}
             eventRendered={onEventRendered}
             actionComplete={calOnActionComplete}
             style={{ left:"50%", transform: "translateX(-50%)"}}

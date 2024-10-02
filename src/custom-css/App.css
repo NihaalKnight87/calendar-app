@@ -1,6 +1,10 @@
 /* I didnt commented here becuase this is not a realtime project its just a task. Keep in mind that i do comment every script which i write make it easer for other deverloper to read */
 *{
     user-select: none;
+    transition: 0.7s ease-in-out !important;
+}
+html{
+    overflow-x: hidden !important;
 }
 img {
     user-select: none;
@@ -38,6 +42,51 @@ img {
 }
 .navLeftSideBar > img{
     transform: scale(0.62) translateY(-210px);
+}
+.dropAnim_Nav{
+    animation: dropAnim_Nav 2.5s ease-in-out;
+}
+.dropAnim_NavSide{
+    animation: dropAnim_NavSide 3s ease-in-out;
+}
+.autoShowAnim_Container{
+    animation: autoShowAnim_Container 3.5s ease-in-out;
+}
+@keyframes dropAnim_Nav {
+    0% {
+        opacity: 0;
+        transform: rotate(95deg) translate(0, -50vh) scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: rotate(0deg) translate(0, 0) scale(1);
+    }
+}
+@keyframes dropAnim_NavSide {
+    0% {
+        opacity: 0;
+        transform: rotate(95deg) translate(100vh, 0) scale(1.5);
+    }
+    50%{
+        transform: rotate(-40deg) translate(50vh, 20vh) scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: rotate(0deg) translate(0, 0) scale(1);
+    }
+}
+@keyframes autoShowAnim_Container{
+    0% {
+        opacity: 0;
+        transform: rotate(0deg) translate(0, 40vh) scale(2);
+    }
+    50% {
+        transform: rotate(30deg) translate(20vh, 30vh) scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: rotate(0deg) translate(0, 0) scale(1);
+    }
 }
 
 .calSection{
@@ -91,6 +140,127 @@ img {
 }
 .calCalendar{
     padding: 10px 15px;
+}
+
+/* Meeting link */
+.calMeetingLinkSection{
+    width: 95%;
+    height: 100%;
+    position: absolute;
+    z-index: 4;
+    background-color: #ffffffb4;
+}
+.calMeetingLinkContainer{
+    top: 10%;
+    left: 50%;
+    padding: 15px;
+    width: 500px;
+    height: 400px;
+    position: absolute;
+    transform: translate(-50%, -5%);
+    border-radius: 6px;
+    box-shadow: 0 1px 16px 0 rgba(0,0,0,.25);
+    background-color: #FFFFFF;
+}
+.calMeetingLinkContainer > div{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    border-radius: 6px;
+    border: 1px solid rgba(128, 128, 128, 0.35);
+}
+.calMeetingLinkClose{
+    top: -10px;
+    right: -10px;
+    position: absolute;
+    border-radius: 25px;
+    border: 3px solid #0A70C3;
+    background-color: #0A70C3;
+    color: #ffffff;
+    cursor: pointer;
+}
+.calMeetingLinkClose:hover{
+    border: 1px solid #555;
+    background-color: #555;
+}
+
+.calMeetingLinkFlexbox_L{
+    padding: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    border-right: 1px solid rgba(128, 128, 128, 0.35);
+}
+.calMeetingLinkFlexbox_L > span{
+    padding-bottom: 18px;
+    font-size: 1.3rem;
+}
+.calMeetingLinkFlexbox_L > button{
+    margin: 5px 0;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #0A70C3;
+    text-decoration: none;
+    background-color: transparent;
+    border-radius: 6px;
+    font-size: 1.5rem;
+    font-weight: 450;
+    color: #0A70C3;
+    overflow: hidden;
+}
+.calMeetingLinkFlexbox_L > button:hover{
+    border: 1px solid #555;
+    background-color: #555;
+    color: rgb(255, 255, 255);
+}
+.calMeetingLinkFlexbox_L > button > div > *:nth-child(1){
+    margin-right: 14px;
+}
+
+.calMeetingLinkFlexbox_R{
+    padding: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+.calMeetingLinkFlexbox_R > div{
+    width: 160px;
+    height: 140px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid #0A70C3;
+    overflow: hidden;
+}
+.calMeetingLinkFlexbox_R > div > img{
+    width: 100%;
+    height: 100%;
+}
+.calMeetingLinkFlexbox_R > button{
+    margin: 10px;
+    width: 110px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    border: 0;
+    border-radius: 6px;
+    color: #ffffff;
+    background-color: #0A70C3;
+    text-align: left;
+    overflow: hidden;
+}
+.calMeetingLinkFlexbox_R > button:hover{
+    background-color: #555;
 }
 
 
