@@ -1,7 +1,7 @@
 /* I didnt commented here becuase this is not a realtime project its just a task. Keep in mind that i do comment every script which i write make it easer for other deverloper to read */
 *{
     user-select: none;
-    transition: 0.7s ease-in-out !important;
+    /* transition: 0.7s ease-in-out !important; */
 }
 html{
     overflow-x: hidden !important;

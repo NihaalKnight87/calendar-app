@@ -46,9 +46,9 @@ const ContentTemplate = (props, events, scheduleRef, sendDataToCalendar) => {
         let EendTime12 = eventEndTime24.toLocaleTimeString([], options);
         EendTime12.includes(':00') && (() => {EendTime12.replace(':00', '');})();
 
-        const startTimePeriod = EstartTime12.slice(-2);
-        startTimePeriod === EendTime12.slice(-2) && (() => {EstartTime12 = EstartTime12.replace(` ${startTimePeriod}`, '')})();
-
+        EstartTime12 = EstartTime12.replace('am', '').replace('pm', '');
+        EendTime12 = EendTime12.replace('am', 'AM').replace('pm', 'PM');
+        
         return `${EstartTime12} - ${EendTime12}`;
     };
 
@@ -90,17 +90,23 @@ const ContentTemplate = (props, events, scheduleRef, sendDataToCalendar) => {
                     {eventMeetings.map(event => {
                         return(
                             //ALERT NOTE: I wont use this key as id as index, since this is only task so it add it. Since I know what i am doing and I will not be deleting any of the add elements so id is find for now but not of production.
-                            <div key={event.Id} className='calContentPopupMeetingsContainer' onClick={(e) => calEventBtn(event, e)}>
-                                <span>{event.JobRole}</span>
-                                <div>
-                                    <span>{event.Description}</span>
-                                    <span>interviewer: {event.InterviewerName}</span>
+                            <>
+                                <div className='calContentPopupMeetingsDivider'></div>
+                                <div key={event.Id} className='calContentPopupMeetingsContainer' onClick={(e) => calEventBtn(event, e)}>
+                                    <div></div>
+                                    <div>
+                                        <span>{event.JobRole}</span>
+                                        <div>
+                                            <span>{event.Description}</span>
+                                            <span>Interviewer: {event.InterviewerName}</span>
+                                        </div>
+                                        <div>
+                                            <span>Date: {`${event.StartTime.getDate()}ᵗʰ ${event.StartTime.toLocaleString('default', { month: 'long' })} ${event.StartTime.getFullYear()}`}</span>
+                                            <span>Time: {eventTemplate(event)}</span> 
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <span>Date: {`${event.StartTime.getDate()}ᵗʰ ${event.StartTime.toLocaleString('default', { month: 'long' })} ${event.StartTime.getFullYear()}`}</span>
-                                    <span>Time: {eventTemplate(event)}</span> 
-                                </div>
-                            </div>
+                            </>
                         );
                     })}
                 </div>

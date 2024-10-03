@@ -279,34 +279,56 @@
     padding: 0 !important;
 }
 .calContentPopupMeetingsSection{
+    padding: 0 15px 15px 15px;
     max-height: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
     border: 4px solid #ffffff;
     overflow-y: scroll;
 }
-.calContentPopupMeetingsContainer{
-    padding: 15px;
+.calContentPopupMeetingsDivider{
     border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+.calContentPopupMeetingsContainer{
+    display: flex;
+    flex-direction: row;
     border-radius: 6px;
+    box-shadow: 0 1px 16px 0 rgba(0,0,0,.25);
+    overflow: hidden;
 }
 .calContentPopupMeetingsContainer:hover{
     color: #FFFFFF;
     background-color: #555;
 }
-.calContentPopupMeetingsContainer > *{
+.calContentPopupMeetingsContainer:hover .calContentPopupMeetingsContainer > div:nth-child(2) > div > span:nth-child(1){
+    border-right: 10px solid #ffffff;
+}
+.calContentPopupMeetingsContainer > div:nth-child(1){
+    width: 25px;
+    background-color: #0A70C3;
+}
+
+.calContentPopupMeetingsContainer > div:nth-child(2) > *{
     font-size: 1.2rem;
     padding-top: 12px;
 }
-.calContentPopupMeetingsContainer > span{
+.calContentPopupMeetingsContainer > div:nth-child(2){
+    padding: 15px;
+}
+.calContentPopupMeetingsContainer > div:nth-child(2) > span{
     font-size: 1.4rem;
     font-weight: 450;
+    text-transform: capitalize;
 }
-.calContentPopupMeetingsContainer > div > span:nth-child(1){
+.calContentPopupMeetingsContainer > div:nth-child(2) > div > span:nth-child(1){
     padding: 3.5px 12px 3.5px 0;
     border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
-.calContentPopupMeetingsContainer > div > span:nth-child(2){
+.calContentPopupMeetingsContainer > div:nth-child(2) > div > span:nth-child(2){
     padding: 0 0 0 12px;
 }
-.calContentPopupMeetingsContainer > div:nth-child(2) > span{
+.calContentPopupMeetingsContainer > div:nth-child(2) > div:nth-child(2) > span{
     font-weight: 400;
 }
