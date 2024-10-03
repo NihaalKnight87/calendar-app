@@ -66,22 +66,22 @@ function Calendar({ sendDataToCalSection }){
     };
 
     const onEventRendered = () => {
-        const observer = new MutationObserver(() => {
-            const appointments = document.querySelectorAll(
-                `.e-appointment[data-id^="Appointment_"]`
-            );
+        // const observer = new MutationObserver(() => {
+        //     const appointments = document.querySelectorAll(
+        //         `.e-appointment[data-id^="Appointment_"]`
+        //     );
     
-            const topPositions = new Map();
-            appointments.forEach((appointment) => {
-                const top = appointment.style.top;
-                if (topPositions.has(top)) appointment.style.display = "none";
-                else topPositions.set(top, true);
-                appointment.style.width = "95.9%";
-            });
-        });
+        //     const topPositions = new Map();
+        //     appointments.forEach((appointment) => {
+        //         const top = appointment.style.top;
+        //         if (topPositions.has(top)) appointment.style.display = "none";
+        //         else topPositions.set(top, true);
+        //         appointment.style.width = "95.9%";
+        //     });
+        // });
     
-        const container = document.querySelector(".e-content-wrap");
-        container && observer.observe(container, { childList: true, subtree: true, });
+        // const container = document.querySelector(".e-content-wrap");
+        // container && observer.observe(container, { childList: true, subtree: true, });
     };
 
     const calOnActionComplete = (e) => {
