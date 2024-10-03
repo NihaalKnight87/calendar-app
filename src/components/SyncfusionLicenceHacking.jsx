@@ -18,7 +18,7 @@ function SyncfusionLicenceHacking() {
     let observer;
     const removeSyncfusionBanner = () => {
       const banner = document.querySelector('div[style*="z-index: 999999999"]');
-      banner && (banner.remove(), setTimeout(() => toast.success("Syncfusion Licence Realtime Hacked Again! Now its free. Developed by NihaalKnight"), 1000));
+      banner && (banner.remove(), setTimeout(() => /* toast.success("Syncfusion Licence Realtime Hacked Again! Now its free. Developed by NihaalKnight") ,*/ 1000));
     };
 
     const monitorForBanner = () => {
