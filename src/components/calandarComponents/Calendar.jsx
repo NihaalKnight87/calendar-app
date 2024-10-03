@@ -125,35 +125,39 @@ function Calendar({ sendDataToCalSection }){
 
     return (
         <>
-            {console.log(events, 'events')}
-            <ScheduleComponent
-                ref={scheduleRef}
-                width="auto"
-                height="auto"
-                startHour="9:00"
-                firstDayOfWeek={1}
-                currentView={view}
-                selectedDate={currentDate}
-                timeScale={{ enable: true, interval: 60, slotCount: 1, majorSlotTemplate: customTimeSlot }}
-                dateHeaderTemplate={CalDateHeaderTemplate}
-                eventSettings={{ dataSource: [...events], template: (props) => CalEventTemplate(props, events) }}
-                quickInfoTemplates={quickInfoTemplate}
-                eventRendered={onEventRendered}
-                actionComplete={calOnActionComplete}
-                style={{ left:"50%", transform: "translateX(-50%)"}}
-            >
-                <ViewsDirective>
-                    <ViewDirective option="Day" />
-                    <ViewDirective option="Week" dateFormat="dd MMM" dayHeaderFormat="EEEE" />
-                    <ViewDirective option="Month" />
-                    <ViewDirective option="Year" />
-                </ViewsDirective>
-                <Inject services={[Day, Week, Month, YearView]} />
-                <div className='calSFDatesSection'>
-                    {(!['Month', 'Year'].includes(view)) && ( <div className='calSFDate'><span>{new Date(currentDate).getDate() || 'ERROR!'}</span></div> )}
-                    <div className='calSFDateRange'><span>{selectedDateRange}</span></div>
-                </div>
-            </ScheduleComponent>
+            {events.length > 0 && (            
+                <>
+                    {console.log(events.length, 'events')}
+                    <ScheduleComponent
+                        ref={scheduleRef}
+                        width="auto"
+                        height="auto"
+                        startHour="9:00"
+                        firstDayOfWeek={1}
+                        currentView={view}
+                        selectedDate={currentDate}
+                        timeScale={{ enable: true, interval: 60, slotCount: 1, majorSlotTemplate: customTimeSlot }}
+                        dateHeaderTemplate={CalDateHeaderTemplate}
+                        eventSettings={{ dataSource: [...events], template: (props) => CalEventTemplate(props, events) }}
+                        quickInfoTemplates={quickInfoTemplate}
+                        eventRendered={onEventRendered}
+                        actionComplete={calOnActionComplete}
+                        style={{ left:"50%", transform: "translateX(-50%)"}}
+                    >
+                        <ViewsDirective>
+                            <ViewDirective option="Day" />
+                            <ViewDirective option="Week" dateFormat="dd MMM" dayHeaderFormat="EEEE" />
+                            <ViewDirective option="Month" />
+                            <ViewDirective option="Year" />
+                        </ViewsDirective>
+                        <Inject services={[Day, Week, Month, YearView]} />
+                        <div className='calSFDatesSection'>
+                            {(!['Month', 'Year'].includes(view)) && ( <div className='calSFDate'><span>{new Date(currentDate).getDate() || 'ERROR!'}</span></div> )}
+                            <div className='calSFDateRange'><span>{selectedDateRange}</span></div>
+                        </div>
+                    </ScheduleComponent>
+                </>
+            )}
         </>
     );
 }

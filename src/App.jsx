@@ -11,7 +11,7 @@ function App() {
     <>
       <NavBar />
       <CalSection />
-      <SyncfusionLicenceHacking />
+      {/* <SyncfusionLicenceHacking /> */}
       <ToastContainer />
     </>
   )
