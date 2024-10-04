@@ -1,7 +1,6 @@
 /* I didnt commented here becuase this is not a realtime project its just a task. Keep in mind that i do comment every script which i write make it easer for other deverloper to read */
 *{
     user-select: none;
-    /* transition: 0.7s ease-in-out !important; */
 }
 html{
     overflow-x: hidden !important;
@@ -43,7 +42,7 @@ img {
 .navLeftSideBar > img{
     transform: scale(0.62) translateY(-210px);
 }
-/* .dropAnim_Nav{
+.dropAnim_Nav{
     animation: dropAnim_Nav 2.5s ease-in-out;
 }
 .dropAnim_NavSide{
@@ -87,7 +86,7 @@ img {
         opacity: 1;
         transform: rotate(0deg) translate(0, 0) scale(1);
     }
-} */
+}
 
 .calSection{
     padding: 0 10px 0 35px;

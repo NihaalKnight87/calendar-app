@@ -40,7 +40,6 @@ function Calendar({ sendDataToCalSection }){
                             }))
                         ];
                     });
-                    console.log(dataRAW, 'dataRAW');
                 } else { toast.error('Error Fetching TAMeeting, Pls try again later!'); return; }
             } catch (error) { toast.error('Error Fetching TAMeeting, Pls try again later!'); }
         })();
@@ -127,9 +126,9 @@ function Calendar({ sendDataToCalSection }){
         <>
             {events.length > 0 && (            
                 <>
-                    {console.log(events.length, 'events')}
                     <ScheduleComponent
                         ref={scheduleRef}
+                        rowAutoHeight={true}
                         width="auto"
                         height="auto"
                         startHour="9:00"

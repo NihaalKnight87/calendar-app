@@ -101,67 +101,81 @@
     border: 0 !important;
 }
 
+.e-all-day-appointment-wrapper{
+    display: none;
+}
+.e-schedule-table.e-outer-table > tbody > tr > td:nth-child(2),
+.e-content-wrap {
+    overflow: visible !important;
+}
 .e-appointment-details{
     padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
 }
-.e-day-wrapper .e-appointment{
-    border: 0px !important;
+.e-day-wrapper .e-appointment,
+.e-schedule .e-appointment{
+    padding: 0 !important;
     border-radius: 6px !important;
     box-shadow: 0 1px 16px 0 rgba(0,0,0,.25);
-    background-color: transparent !important;
+    overflow: visible !important;
 }
-.e-schedule .e-month-view .e-appointment{
-    border: 0px !important;
-    border-radius: 6px !important;
-    box-shadow: 0 1px 16px 0 rgba(0,0,0,.25);
-    background-color: transparent !important;
+.e-schedule .e-appointment-details > div,
+.e-schedule .e-appointment > div
+{
+    width: 100% !important;
+    height: 100% !important;
 }
-
+/*  */
 .e-day-wrapper .e-appointment .calGridEventSection,
-.e-month-view .e-appointment .calGridEventSection{
+.e-appointment .calGridEventSection
+{
     width: 100%;
-    height: 1000px;
+    height: 100%;
     display: flex;
     flex-direction: row;
+    border-radius: 6px;
+    background-color: #FFFFFF;
+    overflow: hidden !important;
 }
 .calGridEventSection > div:nth-child(1){
-    top: -6px;
-    right: -6px;
+    top: -8px;
+    right: -8px;
     width: 24px;
     height: 24px;
     position: absolute;
     border-radius: 25px;
     background-color: rgb(232, 197, 0);
-    overflow: visible !important;
-    z-index: 2;
+    z-index: 1;
 }
 .calGridEventSection > div:nth-child(1) > span{
-    top: 62.5%;
-    left: 39%;
+    top: 52%;
+    left: 50%;
     position: absolute;
     transform: translate(-50%, -50%);
     color: #000000;
+    font-size: 1.4rem;
+    font-weight: 450;
 }
 .e-day-wrapper .calGridEventSidebar,
-.e-month-view .calGridEventSidebar{
-    width: 15px;
+.calGridEventSidebar{
+    width: 28px;
     background-color: #0A70C3;
 }
 .e-day-wrapper .calGridEventContent,
-.e-month-view .calGridEventContent{
-    padding: 4px 5px;
-    flex-grow: 1;
+.calGridEventContent{
+    margin: 4px 10px;
+    width: 100%;
     background-color: #ffffff;
     overflow: hidden !important;
 }
 .e-day-wrapper .calGridEventContent > div,
-.e-month-view .calGridEventContent > div{
-    top: 50%;
+.calGridEventContent > div{
+    width: 100%;
+    height: 100%;
     display: flex;
-    position: absolute;
-    transform: translateY(-50%);
     flex-direction: column;
-    justify-items: center;
+    justify-content: center;  
 }
 
 .calGridEventContent > div > span{
@@ -172,24 +186,46 @@
 .e-more-popup-wrapper .calGridEventSection > div:nth-child(1){
     display: none;
 }
-.e-more-popup-wrapper .calGridEventContent > div > span{
-    color: #ffffff;
+.e-schedule .e-month-view .e-more-indicator{
+    display: none;
+}
+.e-schedule .e-month-view .e-appointment
+{
+    transform: translateY(-150%) scale(0.8);
+    height: 70px;
+}
+.e-work-cells.e-work-days{
+    height: 120px !important;
 }
 
-.e-schedule .e-month-view .e-work-cells, .e-schedule .e-month-agenda-view .e-work-cells{
-    direction: rtl;
-}
-.e-schedule .e-month-view .e-appointment,
-.e-schedule .e-month-view .e-more-indicator
-{
-    align-content: center !important;
-    direction: ltr;
-    transform: translateY(-50%);
-}
+
 .e-schedule .e-month-view .e-date-header{
-    padding-right: 2.5px;
-    transform: translateY(230%);
+    padding-right: 4px;
+    padding-bottom: 6px;
+    height: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: end !important;
+    pointer-events: none;
 }
+.e-schedule .e-month-view .e-current-date .e-date-header, .e-schedule .e-month-agenda-view .e-current-date .e-date-header{
+    margin: 0 !important;
+    padding-right: 7px;
+    padding-bottom: 3px;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    background-color: #ffffff;
+    color: red;
+}
+/* MONTH | *YEAR - EXTRA FIELD */
+.e-more-appointment-wrapper > .e-appointment{
+    margin-bottom: 10px;
+    height: 100%;
+    border-radius: 6px;
+    overflow: hidden !important;
+}
+
 
 .calSFDatesSection{
     top: 0;
@@ -296,18 +332,14 @@
     flex-direction: row;
     border-radius: 6px;
     box-shadow: 0 1px 16px 0 rgba(0,0,0,.25);
-    overflow: hidden;
     cursor: pointer;
 }
-/* .calContentPopupMeetingsContainer:hover{
-    color: #FFFFFF;
-    background-color: #555;
-} */
 .calContentPopupMeetingsContainer:hover .calContentPopupMeetingsContainer > div:nth-child(2) > div > span:nth-child(1){
     border-right: 10px solid #ffffff;
 }
 .calContentPopupMeetingsContainer > div:nth-child(1){
     width: 25px;
+    border-radius: 6px 0 0 6px;
     background-color: #0A70C3;
 }
 
