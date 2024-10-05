@@ -28,12 +28,18 @@ const HeaderTemplate = (props, scheduleRef) => {
     );
 }
 
-const ContentTemplate = (props, events, scheduleRef, sendDataToCalendar) => {
+const ContentTemplate = (props, eventsRAW, scheduleRef, sendDataToCalendar) => {
+    const currentView = scheduleRef.current ? scheduleRef.current.currentView : '';
     const startTime24 = new Date(props.StartTime);
     const endTime24 = new Date(props.EndTime);
 
-    const eventMeetings = events.filter(event => {
-        return new Date(event.StartTime) >= startTime24 && new Date(event.StartTime) < endTime24;
+    const eventMeetings = eventsRAW.filter(event => {
+        if(currentView === 'Day' || currentView === 'Week') return new Date(event.StartTime) >= startTime24 && new Date(event.StartTime) < endTime24;
+        else if (currentView === 'Month' || currentView === 'Year'){
+            const eventStart = startTime24.toISOString().split('T')[0];
+            const filteredEventDate = new Date(event.StartTime).toISOString().split('T')[0];
+            return eventStart === filteredEventDate;
+        }
     });
 
     const eventTemplate = (event) => {
@@ -90,9 +96,9 @@ const ContentTemplate = (props, events, scheduleRef, sendDataToCalendar) => {
                     {eventMeetings.map(event => {
                         return(
                             //ALERT NOTE: I wont use this key as id as index, since this is only task so it add it. Since I know what i am doing and I will not be deleting any of the add elements so id is find for now but not of production.
-                            <>
+                            <div key={event.Id}>
                                 <div className='calContentPopupMeetingsDivider'></div>
-                                <div key={event.Id} className='calContentPopupMeetingsContainer' onClick={(e) => calEventBtn(event, e)}>
+                                <div className='calContentPopupMeetingsContainer' onClick={(e) => calEventBtn(event, e)}>
                                     <div></div>
                                     <div>
                                         <span>{event.JobRole}</span>
@@ -106,7 +112,7 @@ const ContentTemplate = (props, events, scheduleRef, sendDataToCalendar) => {
                                         </div>
                                     </div>
                                 </div>
-                            </>
+                            </div>
                         );
                     })}
                 </div>

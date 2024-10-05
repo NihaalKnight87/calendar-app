@@ -62,12 +62,12 @@
 
 /* TIME */
 .e-schedule .e-vertical-view .e-time-cells-wrap table td, .e-schedule .e-vertical-view .e-work-cells{
-    height: 75px;
+    height: 140px;
 }
 .e-time-cells-wrap span{
     left: 50%;
     position: absolute;
-    transform: translate(-50%, -260%);
+    transform: translate(-50%, -450%);
     color: #0A70C3;
     font-weight: 450;
 }
@@ -138,7 +138,7 @@
     background-color: #FFFFFF;
     overflow: hidden !important;
 }
-.calGridEventSection > div:nth-child(1){
+.calGridEventSection > .calGridEventCount{
     top: -8px;
     right: -8px;
     width: 24px;
@@ -148,7 +148,7 @@
     background-color: rgb(232, 197, 0);
     z-index: 1;
 }
-.calGridEventSection > div:nth-child(1) > span{
+.calGridEventSection > .calGridEventCount > span{
     top: 52%;
     left: 50%;
     position: absolute;
@@ -175,7 +175,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;  
+    justify-content: space-evenly;  
 }
 
 .calGridEventContent > div > span{
@@ -325,6 +325,7 @@
     overflow-y: scroll;
 }
 .calContentPopupMeetingsDivider{
+    margin: 0 0 15px 0;
     border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 .calContentPopupMeetingsContainer{

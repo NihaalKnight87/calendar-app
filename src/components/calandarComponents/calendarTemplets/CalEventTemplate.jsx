@@ -1,9 +1,15 @@
-function CalEventTemplate(props, events){
+function CalEventTemplate(props, scheduleRef, eventsRAW){
+    const currentView = scheduleRef.current ? scheduleRef.current.currentView : '';
     const startTime24 = new Date(props.StartTime);
     const endTime24 = new Date(props.EndTime);
 
-    const eventMeetings = events.filter(event => {
-        return new Date(event.StartTime) >= startTime24 && new Date(event.StartTime) < endTime24;
+    const eventMeetings = eventsRAW.filter(event => {
+        if(currentView === 'Day' || currentView === 'Week') return new Date(event.StartTime) >= startTime24 && new Date(event.StartTime) < endTime24;
+        else if (currentView === 'Month' || currentView === 'Year'){
+            const eventStart = startTime24.toISOString().split('T')[0];
+            const filteredEventDate = new Date(event.StartTime).toISOString().split('T')[0];
+            return eventStart === filteredEventDate;
+        }
     });
 
     const eventTemplate = () => {
@@ -23,9 +29,12 @@ function CalEventTemplate(props, events){
     return (
         <>
             <div className='calGridEventSection'>
-                <div>
-                    <span>{eventMeetings.length || 0}</span>
-                </div>
+                {(eventMeetings.length - 1) > 0 && (
+                    <div className='calGridEventCount'>
+                        <span>{(eventMeetings.length - 1) || 0}</span>
+                    </div>
+                )}
+                
                 <div className='calGridEventSidebar'/>
                 <div className='calGridEventContent'>
                     <div>

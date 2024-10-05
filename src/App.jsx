@@ -2,7 +2,7 @@
 import './custom-css/App.css'
 import NavBar from './components/NavBar.jsx';
 import CalSection from './components/CalSection.jsx';
-import SyncfusionLicenceHacking from './components/SyncfusionLicenceHacking.jsx';
+import { SyncfusionLicenceHacking } from './components/SyncfusionLicenceHacking.jsx';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

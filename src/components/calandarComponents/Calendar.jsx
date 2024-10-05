@@ -6,28 +6,33 @@ import CalDateHeaderTemplate from './calendarTemplets/CalDateHeaderTemplate.jsx'
 import CalEventTemplate from './calendarTemplets/CalEventTemplate.jsx';
 import { ScheduleComponent, Day, Week, Month, Inject, ViewsDirective, ViewDirective, Year as YearView } from '@syncfusion/ej2-react-schedule';
 import { toast } from 'react-toastify';
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { QuickSyncfusionLicenceHacking } from '../SyncfusionLicenceHacking.jsx';
 
-function Calendar({ sendDataToCalSection }){
+function Calendar({ sendDataToCalSection }, ref){
     const scheduleRef = useRef(null);
     const [view, setView] = useState('Week');
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [currentDate, setCurrentDate] = useState(() => new Date());
+    const [isEvents, setIsEvents] = useState(false);
+    const [eventsRAW, setEventsRAW] = useState([]);
     const [events, setEvents] = useState([]);
     const [selectedDateRange, SetSelectedDateRange] = useState('ERROR!');
+    // ADD FOR TEMP TO FIX THIS ISSUE - BECAUSE THE CALANDAR COMPONENT IS NOT RELOADING WHEN NEW DATA IS ADD. LOOKS LIKE A VERISON ISSUE.
+    const [key, setKey] = useState(0);
     
     useEffect(() => {
         (async () => {
             try {
                 const response = await GetFetchTADataApi();
                 if(response.status === 200) {
-                    const dataRAW = response.data;
+                    const dataAPI = response.data;
 
                     // Display Events...
-                    setEvents([]);
-                    setEvents(prevSetEvents => {
-                        return [ 
-                            ...prevSetEvents, 
-                            ...dataRAW.map(data => ({
+                    setEventsRAW([]);
+                    setEventsRAW(prevSetEventsRAW => {
+                        const dataRAW = [ 
+                            ...prevSetEventsRAW, 
+                            ...dataAPI.map(data => ({
                                 Id: crypto.randomUUID(),
                                 Description: data.desc,
                                 StartTime: new Date(data.start),
@@ -39,6 +44,8 @@ function Calendar({ sendDataToCalSection }){
                                 JobRole: data.job_id.jobRequest_Role,
                             }))
                         ];
+                        setEvents(dataRAW);
+                        return dataRAW;
                     });
                 } else { toast.error('Error Fetching TAMeeting, Pls try again later!'); return; }
             } catch (error) { toast.error('Error Fetching TAMeeting, Pls try again later!'); }
@@ -55,41 +62,56 @@ function Calendar({ sendDataToCalSection }){
         
         return (
             <div className='e-time-slots'>
-            <span>{formattedHours}{formattedMinutes} {period}</span>
+                <span>{formattedHours}{formattedMinutes} {period}</span>
             </div>
         );
     };
 
     const quickInfoTemplate = {
         header: (props) => HeaderTemplate(props, scheduleRef),
-        content: (props) => ContentTemplate(props, events, scheduleRef, sendDataToCalSection)
+        content: (props) => ContentTemplate(props, eventsRAW, scheduleRef, sendDataToCalSection)
     };
 
-    const onEventRendered = () => {
-        // const observer = new MutationObserver(() => {
-        //     const appointments = document.querySelectorAll(
-        //         `.e-appointment[data-id^="Appointment_"]`
-        //     );
+    useEffect(() =>{
+        calReCalculatingEventSlots(view);
+        setKey(prevKey => prevKey + 1);
+    }, [view, eventsRAW]);
     
-        //     const topPositions = new Map();
-        //     appointments.forEach((appointment) => {
-        //         const top = appointment.style.top;
-        //         if (topPositions.has(top)) appointment.style.display = "none";
-        //         else topPositions.set(top, true);
-        //         appointment.style.width = "95.9%";
-        //     });
-        // });
-    
-        // const container = document.querySelector(".e-content-wrap");
-        // container && observer.observe(container, { childList: true, subtree: true, });
-    };
+    const calReCalculatingEventSlots = (currentView) => {
+        const filteredEvents = [];
+        (currentView === 'Day' || currentView === 'Week') && (() => {
+            eventsRAW.forEach((event) => {
+                const eventStart = new Date(event.StartTime);
+                const isDuplicate = filteredEvents.some((filteredEvent) => {
+                    const filteredStart = new Date(filteredEvent.StartTime);
+                    const filteredEnd = new Date(filteredEvent.EndTime);
+                    return eventStart >= filteredStart && eventStart < filteredEnd;
+                });
+                !isDuplicate && filteredEvents.push(event);
+            });
+            setEvents(filteredEvents);
+            QuickSyncfusionLicenceHacking();
+        })();
+        (currentView === 'Month' || currentView === 'Year') && (() => {
+            eventsRAW.forEach((event) => {
+                const eventStart = new Date(event.StartTime).toISOString().split('T')[0];
+                const isDuplicate = filteredEvents.some((filteredEvent) => {
+                    const filteredEventDate = new Date(filteredEvent.StartTime).toISOString().split('T')[0];
+                    return eventStart === filteredEventDate;
+                });
+                !isDuplicate && filteredEvents.push(event);
+            });
+            setEvents(filteredEvents);
+            QuickSyncfusionLicenceHacking();
+        })();
+    }
 
     const calOnActionComplete = (e) => {
         if(e.addedRecords && e.addedRecords.length > 0){
             const data = e.addedRecords[0];
-            setEvents(prevSetEvents => {
-                return [ 
-                    ...prevSetEvents, ({
+            setEventsRAW(prevSetEventsRAW => {
+                const dataRAW = [ 
+                    ...prevSetEventsRAW, ({
                         Id: crypto.randomUUID(),
                         Description: data.Description || 'NA',
                         StartTime: new Date(data.StartTime),
@@ -101,16 +123,18 @@ function Calendar({ sendDataToCalSection }){
                         JobRole: 'NA',
                     })
                 ];
+                setEvents(dataRAW);
+                return dataRAW;
             });
         }
 
-        const currentView = scheduleRef.current ? scheduleRef.current.currentView : '';
-        const selectedDates = scheduleRef.current ? scheduleRef.current.getCurrentViewDates() : '';
-        const startDate = selectedDates[0];
-        const endDate = selectedDates[selectedDates.length - 1];
-        const startMonth = selectedDates[20];
+        const currentView = scheduleRef.current ? scheduleRef.current.currentView : view;
+        const selectedDates = scheduleRef.current ? scheduleRef.current.getCurrentViewDates() : [];
+        const startDate = selectedDates.length > 0 ? selectedDates[0] : new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const endDate = selectedDates.length > 0 ? selectedDates[selectedDates.length - 1] : new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+        const startMonth = selectedDates.length > 0 ? selectedDates[20] : new Date(currentDate.getFullYear(), currentDate.getMonth(), 20);
         
-        setCurrentDate(startDate);
+        selectedDates > 0 && setCurrentDate(startDate);
         (['Day', 'Week', 'Month', 'Year'].includes(currentView)) && setView(currentView);
         currentView === 'Day' && SetSelectedDateRange(`${startDate.getDate()}ᵗʰ ${startDate.toLocaleString('default', { month: 'long' })}, ${startDate.getFullYear()}`);
         currentView === 'Week' && (() => {
@@ -122,11 +146,43 @@ function Calendar({ sendDataToCalSection }){
         currentView === 'Year' && SetSelectedDateRange(startDate.getFullYear());
     };
 
+    const calOnCreateEventDefault = () => {
+        setEventsRAW(prevSetEventsRAW => {
+            const dataRAW = [ 
+                ...prevSetEventsRAW, ({
+                    Id: crypto.randomUUID(),
+                    Description: 'NA',
+                    StartTime: new Date(2000, 1, 12, 9, 0),
+                    EndTime: new Date(2000, 1, 12, 10, 0),
+                    Location: 'NA',
+                    InterviewerName: `NA`,
+                    CandidateName: 'NA',
+                    JobTitle: 'NA',
+                    JobRole: 'NA',
+                    IsAllDay: false,
+                })
+            ];
+            setEvents(dataRAW);
+            return dataRAW;
+        });
+        toast.success('Default Events is created! Now customized Events as you needed!')
+        QuickSyncfusionLicenceHacking();
+    };
+    const calOnDeleteAll = () => {
+        setEvents([]);
+        setEventsRAW([]);
+        isEvents && toast.error('You dont have any events created or saved! Please create a default event to get start!');
+        QuickSyncfusionLicenceHacking();
+    }
+    useImperativeHandle(ref, () => ({ calOnCreateEventDefault, calOnDeleteAll }));
+
     return (
         <>
-            {events.length > 0 && (            
+            {eventsRAW.length > 0 && events.length > 0? (
                 <>
+                    {!isEvents && setIsEvents(true)} 
                     <ScheduleComponent
+                        key={key}
                         ref={scheduleRef}
                         rowAutoHeight={true}
                         width="auto"
@@ -137,9 +193,8 @@ function Calendar({ sendDataToCalSection }){
                         selectedDate={currentDate}
                         timeScale={{ enable: true, interval: 60, slotCount: 1, majorSlotTemplate: customTimeSlot }}
                         dateHeaderTemplate={CalDateHeaderTemplate}
-                        eventSettings={{ dataSource: [...events], template: (props) => CalEventTemplate(props, events) }}
+                        eventSettings={{ dataSource: [...events], template: (props) => CalEventTemplate(props, scheduleRef, eventsRAW) }}
                         quickInfoTemplates={quickInfoTemplate}
-                        eventRendered={onEventRendered}
                         actionComplete={calOnActionComplete}
                         style={{ left:"50%", transform: "translateX(-50%)"}}
                     >
@@ -156,8 +211,11 @@ function Calendar({ sendDataToCalSection }){
                         </div>
                     </ScheduleComponent>
                 </>
+            ) : (
+                // NOTE: I dont use style instead I use classname to make it perfect since this is not a real world project. 
+                <div style={{padding: '10px', fontSize: '1.4rem', fontWeight: 'bold', textAlign: 'center', color: '#ff0000'}}>You dont have any events created or saved! Please create a default event to get start!</div> 
             )}
         </>
     );
 }
-export default Calendar;
+export default forwardRef(Calendar);

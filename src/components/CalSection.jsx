@@ -1,14 +1,15 @@
 /* I didnt commented here becuase this is not a realtime project its just a task. Keep in mind that i do comment every script which i write make it easer for other deverloper to read */
 import Calendar from './calandarComponents/Calendar.jsx';
 import AddIcon from '@mui/icons-material/Add';
-
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import GoogleMeet from '../assets/icons/meet.webp'
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 function CalSection(){
+  const calandarRef = useRef(null);
   const [eventDetailsUI, setEventDetailsUI] = useState(false);
   const [eventDetailsData, setEventDetailsData] = useState([]);
 
@@ -101,15 +102,18 @@ function CalSection(){
             <div className='calCalendarInfo'>
                 <h5>Your Todos's</h5>
                 <div>
-                  <AddIcon sx={{ fontSize: 25, strokeWidth: 2 }} />
-                  <span>Create Schedule</span>
+                  <div onClick={() => calandarRef.current && calandarRef.current.calOnCreateEventDefault()}>
+                    <AddIcon sx={{ fontSize: 25, strokeWidth: 2 }} />
+                    <span>Create Schedule</span>
+                  </div>
+                  <div onClick={() => calandarRef.current && calandarRef.current.calOnDeleteAll()}>
+                    <DeleteForeverRoundedIcon sx={{ fontSize: 25, strokeWidth: 2 }} />
+                  </div>
                 </div>
             </div>
             <div className='calCalendar'>
-                <Calendar sendDataToCalSection={calEventBtnCallback} />
+                <Calendar ref={calandarRef} sendDataToCalSection={calEventBtnCallback} />
             </div>
-
-            
           </div>
       </div>
       <br />
